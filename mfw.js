@@ -7,10 +7,14 @@
    */
 
   function $(...q) {
-    return q.reduce(
-      (r, s) => (!r ? null : "object" == typeof s ? s : r.querySelector(s)),
-      document
-    );
+    return !q.length
+      ? null
+      : Array.isArray(q[0])
+      ? $(q[0].reduce((r, s, i) => ((r += (i ? q[i] : "") + s), r), ""))
+      : q.reduce(
+          (r, s) => (!r ? null : "object" == typeof s ? s : r.querySelector(s)),
+          document
+        );
   }
 
   /**
@@ -20,15 +24,19 @@
    * @returns {ElementCollection}
    */
   function $$(...q) {
-    return q.reduce(
-      (r, s, i, q) =>
-        !r
-          ? null
-          : "object" == typeof s
-          ? s
-          : r["querySelector" + (i == q.length - 1 ? "All" : "")](s),
-      document
-    );
+    return !q.length
+      ? null
+      : Array.isArray(q[0])
+      ? $$(q[0].reduce((r, s, i) => ((r += (i ? q[i] : "") + s), r), ""))
+      : q.reduce(
+          (r, s, i, q) =>
+            !r
+              ? null
+              : "object" == typeof s
+              ? s
+              : r["querySelector" + (i == q.length - 1 ? "All" : "")](s),
+          document
+        );
   }
 
   /**
