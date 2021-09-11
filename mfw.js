@@ -116,9 +116,9 @@
       return def;
     }
     const element = def.u
-        ? def.u
+        ? $(def.u)
         : def.o
-        ? def.o.cloneNode(def.t)
+        ? $(def.o).cloneNode(def.t)
         : create(def.n, def.d, def.x),
       zip = [element];
     if (def.m) {
