@@ -116,7 +116,7 @@
       return def;
     }
     if(def.u instanceof NodeList||Array.isArray(def.u)){
-      return def.u.map(u => _(Object.assign({}, def, {u})));
+      return oneOrMany(def.u,u => _(Object.assign({}, def, {u})));
     }
     const element = def.u
         ? $(def.u)
