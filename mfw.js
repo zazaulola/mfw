@@ -101,7 +101,7 @@
         xmlns = "http://www.w3.org/1999/xhtml"
       ) => doc.createElementNS(xmlns, name),
       oneOrMany = (object, callback) =>
-        (Array.isArray(object) ? object : [object]).map(callback),
+        (Array.isArray(object) ? object : object instanceof NodeList ? [...object] : [object]).map(callback),
       replaceCssProperty = (property) =>
         property.replace(/-(\w)/g, (matches) => matches[1].toUpperCase()),
       forEachEntry = (object, callback) =>
@@ -114,6 +114,9 @@
     }
     if (def instanceof Element) {
       return def;
+    }
+    if(def.u instanceof NodeList||Array.isArray(def.u)){
+      return def.u.map(u => _(Object.assign({}, def, {u})));
     }
     const element = def.u
         ? $(def.u)
@@ -165,9 +168,15 @@
       $(def.r).replaceWith(element);
     }
     if (def.i) {
+      const appendElement = subElement => {
+        zip.push(subElement);
+        element.appendChild(subElement);
+      };
       oneOrMany(
         _(def.i),
-        (subElement) => (zip.push(subElement), element.appendChild(subElement))
+        subElement => subElement instanceof Document
+          ? [...(subElement.body ? subElement.body : subElement.documentElement).childNodes].map(appendElement)
+          : appendElement(subElement)
       );
     }
     if (def.w) {
